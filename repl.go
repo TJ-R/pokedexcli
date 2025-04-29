@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"os"
 	"pokedexcli/internal/pokeapi"
+	"pokedexcli/internal/pokecache"
 	"strings"
 )
 
 type config struct {
 	pokeapiClient pokeapi.Client
+	pokecache pokecache.Cache
 	nextLocationURL *string
 	previousLocationURL *string
 }
@@ -45,7 +47,8 @@ func startRepl(config *config) {
 
 func cleanInput(text string) []string {
 	trimmed := strings.TrimSpace(text);
-	words := strings.Fields(trimmed);
+	lower := strings.ToLower(trimmed);
+	words := strings.Fields(lower);
 
 	return words
 }

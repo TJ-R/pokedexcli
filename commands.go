@@ -58,7 +58,7 @@ func commandHelp(config *config) error {
 }
 
 func commandMap(config *config) error {
-	locationsResp, err := config.pokeapiClient.ListLocations(config.nextLocationURL)
+	locationsResp, err := config.pokeapiClient.ListLocations(config.nextLocationURL, &config.pokecache)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func commandMap(config *config) error {
 }
 
 func commandMapb(config *config) error {
-	locationsResp, err := config.pokeapiClient.ListLocations(config.previousLocationURL)
+	locationsResp, err := config.pokeapiClient.ListLocations(config.previousLocationURL, &config.pokecache)
 	if err != nil {
 		return err
 	}

@@ -4,12 +4,24 @@ import (
 	"net/http"
 	"io"
 	"encoding/json"
+	"pokedexcli/internal/pokecache"
 )
 
-func (c *Client) ListLocations(pageURL *string) (LocationAreasResponse, error) {
+func (c *Client) ListLocations(pageURL *string, cache *pokecache.Cache) (LocationAreasResponse, error) {
 	url := baseURL + "/location-area"
 	if pageURL != nil {
 		url = *pageURL
+	}
+
+	cachedResp, ok := cache.Get(url)
+	if ok {
+		locationsResp := LocationAreasResponse{}
+		err := json.Unmarshal(cachedResp, &locationsResp)
+		if err != nil {
+			return LocationAreasResponse{}, err
+		}
+		fmt.Print("USING CACHED VALUE\n")
+		return locationsResp, nil
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -27,6 +39,8 @@ func (c *Client) ListLocations(pageURL *string) (LocationAreasResponse, error) {
 	if err != nil {
 		return LocationAreasResponse{}, err
 	}
+
+	cache.Add(url, dat)
 
 	locationsResp := LocationAreasResponse{}
 	err = json.Unmarshal(dat, &locationsResp)
