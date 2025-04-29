@@ -33,7 +33,7 @@ func startRepl(config *config) {
 			// Use the first word of the message as the command
 			command, ok := getCommands()[cleanMessage[0]]
 			if ok {
-				err := command.callback(config)
+				err := command.callback(config, cleanMessage[1:])
 				if err != nil {
 					fmt.Println(err)
 				}

@@ -50,3 +50,44 @@ func (c *Client) ListLocations(pageURL *string, cache *pokecache.Cache) (Locatio
 	return locationsResp, nil
 }
 
+func (c *Client) ExploreLocation(areaName string, cache *pokecache.Cache) (ExploreAreaResponse, error) {
+	url := baseURL + "/location-area" + "/" + areaName
+
+	cachedResp, ok := cache.Get(url)
+	if ok {
+		exploreResp := ExploreAreaResponse{}
+		err := json.Unmarshal(cachedResp, &exploreResp)
+		if err != nil {
+			return ExploreAreaResponse{}, err
+		}
+		return exploreResp, nil
+	}
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return ExploreAreaResponse{}, nil
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return ExploreAreaResponse{}, nil
+	}
+	defer resp.Body.Close()
+
+	dat, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return ExploreAreaResponse{}, nil
+	}
+
+	cache.Add(url, dat)
+	
+	exploreResp := ExploreAreaResponse{}
+	err = json.Unmarshal(dat, &exploreResp)
+	if err != nil {
+		return ExploreAreaResponse{}, err
+	}
+
+	return exploreResp, nil
+
+}
+
