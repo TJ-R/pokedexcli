@@ -20,7 +20,6 @@ func (c *Client) ListLocations(pageURL *string, cache *pokecache.Cache) (Locatio
 		if err != nil {
 			return LocationAreasResponse{}, err
 		}
-		fmt.Print("USING CACHED VALUE\n")
 		return locationsResp, nil
 	}
 
