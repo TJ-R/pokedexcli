@@ -45,10 +45,15 @@ func getCommands() map[string]cliCommand {
 			description: "Attempt to catch pokemon",
 			callback: commandCatch,
 		},
-		"list": {
-			name:   	 "list",
+		"pokedex": {
+			name:   	 "pokedex",
 			description: "List all pokemon in pokedex",
-			callback: commandList,
+			callback: commandPokedex,
+		},
+		"inspect": {
+			name:  		 "inspect",
+			description: "List Pokemon Details from pokedex",
+			callback: commandInspect,
 		},
 	}
 }
@@ -141,10 +146,35 @@ func commandCatch(config *config, parameters []string) error {
 	return nil
 }
 
-func commandList(config *config, parameters []string) error {
-	fmt.Println("Pokemon in pokedex:")
+func commandPokedex(config *config, parameters []string) error {
+	fmt.Println("Your Pokedex:")
 	for _, pokemonResp := range config.pokedex {
 		fmt.Printf("- %s\n", pokemonResp.Name)
+	}
+
+	return nil
+}
+
+func commandInspect(config *config, parameters []string) error {
+	pokemon, ok := config.pokedex[parameters[0]]
+
+	if !ok {
+		fmt.Printf("%s is not in the pokedex.\n", parameters[0])
+		return nil
+	}
+
+	fmt.Printf("Name: %s\n", pokemon.Name)
+	fmt.Printf("Height: %d\n", pokemon.Height)
+	fmt.Printf("Weight: %d\n", pokemon.Weight)
+
+	fmt.Println("Stats:")
+	for _, stat := range pokemon.Stats {
+		fmt.Printf(" -%s: %d\n", stat.Stat.Name, stat.BaseStat)
+	}
+
+	fmt.Println("Types:")
+	for _, pokemon_type := range pokemon.Types {
+		fmt.Printf(" - %s\n", pokemon_type.Type.Name)
 	}
 
 	return nil

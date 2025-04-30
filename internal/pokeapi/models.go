@@ -163,7 +163,7 @@ type PokemonResponse struct {
 				FrontShiny       string `json:"front_shiny"`
 				FrontShinyFemale string `json:"front_shiny_female"`
 			} `json:"home"`
-			OfficialArtwork struct {
+		OfficialArtwork struct {
 				FrontDefault string `json:"front_default"`
 				FrontShiny   string `json:"front_shiny"`
 			} `json:"official-artwork"`
