@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"math/rand"
 )
 
 
@@ -38,6 +39,16 @@ func getCommands() map[string]cliCommand {
 			name: 		 "explore",
 			description: "Get exploration info for the location",
 			callback: commandExplore,
+		},
+		"catch": {
+			name: 		 "catch",
+			description: "Attempt to catch pokemon",
+			callback: commandCatch,
+		},
+		"list": {
+			name:   	 "list",
+			description: "List all pokemon in pokedex",
+			callback: commandList,
 		},
 	}
 }
@@ -106,4 +117,35 @@ func commandExplore(config *config, parameters []string) error {
 		fmt.Println("- ", encounter.Pokemon.Name)
 	}
 	return nil	
+}
+
+func commandCatch(config *config, parameters []string) error {
+	fmt.Printf("Throwing a Pokeball at %s...\n", parameters[0])
+
+	pokemonResp, err := config.pokeapiClient.GetPokemon(parameters[0], &config.pokecache)
+	if err != nil {
+		return err
+	}
+
+	baseExperience := pokemonResp.BaseExperience
+
+	chance := baseExperience / 50
+	
+	if (chance == rand.Intn(chance+1)) {
+		fmt.Printf("%s was caught!\n", parameters[0])
+		config.pokedex[parameters[0]] = pokemonResp
+		return nil
+	}
+
+	fmt.Printf("%s escaped!\n", parameters[0])
+	return nil
+}
+
+func commandList(config *config, parameters []string) error {
+	fmt.Println("Pokemon in pokedex:")
+	for _, pokemonResp := range config.pokedex {
+		fmt.Printf("- %s\n", pokemonResp.Name)
+	}
+
+	return nil
 }

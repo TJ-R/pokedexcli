@@ -12,6 +12,7 @@ import (
 type config struct {
 	pokeapiClient pokeapi.Client
 	pokecache pokecache.Cache
+	pokedex map[string]pokeapi.PokemonResponse
 	nextLocationURL *string
 	previousLocationURL *string
 }

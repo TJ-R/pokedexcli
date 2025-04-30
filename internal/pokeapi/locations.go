@@ -51,7 +51,7 @@ func (c *Client) ListLocations(pageURL *string, cache *pokecache.Cache) (Locatio
 }
 
 func (c *Client) ExploreLocation(areaName string, cache *pokecache.Cache) (ExploreAreaResponse, error) {
-	url := baseURL + "/location-area" + "/" + areaName
+	url := baseURL + "/location-area/" + areaName
 
 	cachedResp, ok := cache.Get(url)
 	if ok {
